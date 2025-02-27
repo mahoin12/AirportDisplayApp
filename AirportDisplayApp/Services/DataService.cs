@@ -118,6 +118,42 @@ namespace AirportDisplayApp.Services
             Task.Delay(5000).ContinueWith(_ => InitializePipeAsync());
         }
         
+        
+        public void RefreshData()
+        {
+            // Bağlantı durumunu güncelle
+            UpdateConnectionStatus("Manuel yenileme başlatılıyor...");
+    
+            try
+            {
+                // Bağlantı durumunu kontrol et
+                if (!isPipeConnected || pipeClient == null || !pipeClient.IsConnected)
+                {
+                    // Bağlantı yoksa yeniden bağlan
+                    CleanupResources();
+                    _ = InitializePipeAsync();
+                    return;
+                }
+        
+                // Bağlantı varsa, veri güncellemesini tetikleyecek bir mesaj gönderilebilir
+                // veya mevcut veriler kullanılarak UI güncellenebilir
+                if (airportData != null)
+                {
+                    // Örnek olarak, mevcut verileri tekrar gönderebiliriz
+                    DataUpdated?.Invoke(this, airportData);
+                    UpdateConnectionStatus($"Veriler yenilendi: {DateTime.Now:HH:mm:ss}");
+                }
+                else
+                {
+                    UpdateConnectionStatus("Veri modeli henüz yüklenmedi");
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateConnectionStatus($"Yenileme hatası: {ex.Message}");
+            }
+        }
+        
         /// <summary>
         /// Named pipe'tan veri oku
         /// </summary>
