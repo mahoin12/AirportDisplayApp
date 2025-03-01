@@ -7,7 +7,7 @@ using System.Windows.Media;
 namespace AirportDisplayApp.UI
 {
     /// <summary>
-    /// Merkez paneli bileşeni - Havaalanı genel bilgileri ve meteorolojik verileri içerir
+    /// Merkez panel bileşeni - Havaalanı bilgileri ve meteorolojik verileri
     /// </summary>
     public class CenterPanelComponent : BaseUIComponent
     {
@@ -20,166 +20,195 @@ namespace AirportDisplayApp.UI
         public override FrameworkElement Create(Grid parent, int row, int column)
         {
             Border centerBorder = new Border();
-            centerBorder.Style = _styles["CenterPanelStyleV2"] as Style;
-
+            centerBorder.BorderBrush = Brushes.LightGray;
+            centerBorder.BorderThickness = new Thickness(1);
+            centerBorder.Margin = new Thickness(5);
+            centerBorder.Background = Brushes.White;
+            
             Grid centerGrid = new Grid();
-            centerGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(30) }); // Başlık
-            centerGrid.RowDefinitions.Add(new RowDefinition()); // Veri alanı
-
-            // Başlık
-            Border headerBorder = new Border();
-            headerBorder.Style = _styles["CenterPanelHeaderStyleV2"] as Style;
-
-            TextBlock headerText = new TextBlock();
-            headerText.Text = "Çiğli Havaalanı";
-            headerText.Style = _styles["RunwayHeaderLabelStyle"] as Style;
-            headerBorder.Child = headerText;
-
-            // Veri paneli
-            ScrollViewer dataScrollViewer = new ScrollViewer();
-            dataScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            dataScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            dataScrollViewer.Margin = new Thickness(0);
-            dataScrollViewer.Padding = new Thickness(0);
-
-            Grid dataGrid = CreateDataGrid();
-            dataScrollViewer.Content = dataGrid;
-
-            Grid.SetRow(headerBorder, 0);
-            Grid.SetRow(dataScrollViewer, 1);
-
-            centerGrid.Children.Add(headerBorder);
-            centerGrid.Children.Add(dataScrollViewer);
-
             centerBorder.Child = centerGrid;
-
+            
+            centerGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(40) });  // Başlık
+            centerGrid.RowDefinitions.Add(new RowDefinition());                                 // İçerik
+            
+            // Başlık
+            Border headerBorder = CreateCenterHeader();
+            centerGrid.Children.Add(headerBorder);
+            Grid.SetRow(headerBorder, 0);
+            
+            // İçerik
+            ScrollViewer contentScrollViewer = new ScrollViewer();
+            contentScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            
+            Grid contentGrid = CreateContentGrid();
+            contentScrollViewer.Content = contentGrid;
+            
+            centerGrid.Children.Add(contentScrollViewer);
+            Grid.SetRow(contentScrollViewer, 1);
+            
             Grid.SetRow(centerBorder, row);
             Grid.SetColumn(centerBorder, column);
             parent.Children.Add(centerBorder);
-
+            
             return centerBorder;
         }
-
+        
         /// <summary>
-        /// Veri tablosunu oluşturur
+        /// Merkez panel başlığını oluşturur
         /// </summary>
-        private Grid CreateDataGrid()
+        private Border CreateCenterHeader()
         {
-            Grid dataGrid = new Grid();
-            dataGrid.Margin = new Thickness(5);
-            dataGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Border headerBorder = new Border();
+            headerBorder.Background = Brushes.LightGray;
+            headerBorder.BorderBrush = Brushes.LightGray;
+            headerBorder.BorderThickness = new Thickness(0, 0, 0, 1);
             
-            // Tek sütunlu layout
-            dataGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            // Satır tanımları
-            for (int i = 0; i < 15; i++)
-            {
-                dataGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            }
-
-            int rowIndex = 0;
-
-            // Kullanılan Pist
-            CreateDataBlockRow(dataGrid, rowIndex++, "RWYINUSE", "35", "", "rwyInUseInfo");
-
-            // QNH
-            CreateDataBlockRow(dataGrid, rowIndex++, "QNH", "1013.2", "hPa", "qnh");
-
-            // QNH inHg
-            CreateDataBlockRow(dataGrid, rowIndex++, "QNH", "29.92", "inHg", "qnhInHg");
-
-            // QFE
-            CreateDataBlockRow(dataGrid, rowIndex++, "QFE", "1013.2", "hPa", "qfe");
-
-            // QFE SYNOP
-            CreateDataBlockRow(dataGrid, rowIndex++, "QFE SYNOP", "1012.7", "hPa", "qfeSynop");
-
-            // LOW
-            CreateDataBlockRow(dataGrid, rowIndex++, "LOW", "NCD", "", "low");
-
-            // Temp
-            CreateDataBlockRow(dataGrid, rowIndex++, "Temp", "30.4", "°C", "temp");
-
-            // Td
-            CreateDataBlockRow(dataGrid, rowIndex++, "Td", "19.7", "°C", "td");
-
-            // RH
-            CreateDataBlockRow(dataGrid, rowIndex++, "RH", "52", "%", "rh");
-
-            // Tmax
-            CreateDataBlockRow(dataGrid, rowIndex++, "Tmax", "30.9", "°C", "tmax");
-
-            // Tmin
-            CreateDataBlockRow(dataGrid, rowIndex++, "Tmin", "20.4", "°C", "tmin");
-
-            // Trwy
-            CreateDataBlockRow(dataGrid, rowIndex++, "Trwy", "49.9", "°C", "trwy");
-
-            return dataGrid;
+            TextBlock headerText = new TextBlock();
+            headerText.Text = "Çiğli Airport";  // Referans ekran görüntüsüne göre
+            headerText.FontSize = 16;
+            headerText.FontWeight = FontWeights.Bold;
+            headerText.VerticalAlignment = VerticalAlignment.Center;
+            headerText.HorizontalAlignment = HorizontalAlignment.Center;
+            
+            headerBorder.Child = headerText;
+            
+            return headerBorder;
         }
-
+        
         /// <summary>
-        /// Veri satırı oluşturur (Etiket ve Değer)
+        /// Merkez panel içeriğini oluşturur
         /// </summary>
-        private void CreateDataBlockRow(Grid grid, int row, string label, string value, string unit, string valueKey)
+        private Grid CreateContentGrid()
         {
-            // Ana grid - her satır için
+            Grid contentGrid = new Grid();
+            contentGrid.Margin = new Thickness(10);
+            
+            // Satırlar - Referans ekran görüntüsündeki merkez panelin satır sayısı
+            for (int i = 0; i < 14; i++)
+            {
+                contentGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+            }
+            
+            int rowIndex = 0;
+            
+            // RWYINUSE
+            CreateDataRow(contentGrid, rowIndex++, "RWYINUSE", "35", "", "rwyInUseInfo");
+            
+            // QNH (hPa)
+            CreateDataRow(contentGrid, rowIndex++, "QNH", "1013.2", "hPa", "qnh");
+            
+            // QNH (inHg)
+            CreateDataRow(contentGrid, rowIndex++, "QNH", "29.92", "inHg", "qnhInHg");
+            
+            // QFE
+            CreateDataRow(contentGrid, rowIndex++, "QFE", "1013.2", "hPa", "qfe");
+            
+            // QFE SYNOP
+            CreateDataRow(contentGrid, rowIndex++, "QFE SYNOP", "1012.7", "hPa", "qfeSynop");
+            
+            // SKY AERODROME header
+            CreateHeaderRow(contentGrid, rowIndex++, "SKY AERODROME");
+            
+            // HIGH
+            CreateDataRow(contentGrid, rowIndex++, "HIGH", "", "ft", "high");
+            
+            // MID
+            CreateDataRow(contentGrid, rowIndex++, "MID", "", "ft", "mid");
+            
+            // LOW
+            CreateDataRow(contentGrid, rowIndex++, "LOW", "NCD", "ft", "low");
+            
+            // Temp
+            CreateDataRow(contentGrid, rowIndex++, "Temp", "30.4", "°C", "temp");
+            
+            // Td
+            CreateDataRow(contentGrid, rowIndex++, "Td", "19.7", "°C", "dewPoint");
+            
+            // RH
+            CreateDataRow(contentGrid, rowIndex++, "RH", "52", "%", "relativeHumidity");
+            
+            // Tmax
+            CreateDataRow(contentGrid, rowIndex++, "Tmax", "30.9", "°C", "tempMax");
+            
+            // Tmin
+            CreateDataRow(contentGrid, rowIndex++, "Tmin", "20.4", "°C", "tempMin");
+            
+            // Trwy
+            CreateDataRow(contentGrid, rowIndex++, "Trwy", "49.9", "°C", "runwayTemp");
+            
+            return contentGrid;
+        }
+        
+        /// <summary>
+        /// Başlık satırı oluşturur
+        /// </summary>
+        private void CreateHeaderRow(Grid grid, int row, string headerText)
+        {
+            TextBlock headerLabel = new TextBlock();
+            headerLabel.Text = headerText;
+            headerLabel.FontSize = 14;
+            headerLabel.FontWeight = FontWeights.Bold;
+            headerLabel.VerticalAlignment = VerticalAlignment.Center;
+            headerLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            headerLabel.Margin = new Thickness(5, 0, 0, 0);
+            
+            Grid.SetRow(headerLabel, row);
+            grid.Children.Add(headerLabel);
+        }
+        
+        /// <summary>
+        /// Veri satırı oluşturur
+        /// </summary>
+        private void CreateDataRow(Grid grid, int row, string label, string value, string unit, string valueKey)
+        {
             Grid rowGrid = new Grid();
-            rowGrid.Margin = new Thickness(0, 2, 0, 2);
             
-            // İki sütunlu layout: Etiket ve Değer
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) }); // Etiket
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Değer
+            // İki sütunlu düzen
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(100) }); // Etiket
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition());                               // Değer ve birim
             
-            // Etiket bloğu
-            Border labelBorder = new Border();
-            labelBorder.Style = _styles["DataBlockStyle"] as Style;
-            labelBorder.Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
-            
+            // Etiket
             TextBlock labelText = new TextBlock();
             labelText.Text = label;
-            labelText.Style = _styles["DataLabelStyle"] as Style;
-            labelText.Margin = new Thickness(5, 0, 5, 0);
+            labelText.FontSize = 14;
+            labelText.VerticalAlignment = VerticalAlignment.Center;
+            labelText.HorizontalAlignment = HorizontalAlignment.Left;
+            labelText.Margin = new Thickness(5, 0, 0, 0);
             
-            labelBorder.Child = labelText;
+            // Değer ve birim için panel
+            StackPanel valuePanel = new StackPanel();
+            valuePanel.Orientation = Orientation.Horizontal;
+            valuePanel.HorizontalAlignment = HorizontalAlignment.Left;
             
-            // Değer bloğu
-            Border valueBorder = new Border();
-            valueBorder.Style = _styles["DataBlockStyle"] as Style;
-            
-            // Değer ve birim için grid
-            Grid valueGrid = new Grid();
-            valueGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Değer
-            valueGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Birim
-            
+            // Değer
             TextBlock valueText = new TextBlock();
             valueText.Text = value;
-            valueText.Style = _styles["DataValueStyle"] as Style;
+            valueText.FontSize = 14;
+            valueText.FontWeight = FontWeights.Bold;
+            valueText.Foreground = Brushes.Black;
+            valueText.VerticalAlignment = VerticalAlignment.Center;
+            valueText.Margin = new Thickness(0, 0, 5, 0);
+            
             RegisterTextElement(valueText, valueKey);
             
-            Grid.SetColumn(valueText, 0);
-            valueGrid.Children.Add(valueText);
+            valuePanel.Children.Add(valueText);
             
-            // Birim varsa ekle
+            // Birim (varsa)
             if (!string.IsNullOrEmpty(unit))
             {
                 TextBlock unitText = new TextBlock();
                 unitText.Text = unit;
-                unitText.Style = _styles["DataUnitStyle"] as Style;
+                unitText.FontSize = 14;
+                unitText.VerticalAlignment = VerticalAlignment.Center;
                 
-                Grid.SetColumn(unitText, 1);
-                valueGrid.Children.Add(unitText);
+                valuePanel.Children.Add(unitText);
             }
             
-            valueBorder.Child = valueGrid;
+            Grid.SetColumn(labelText, 0);
+            Grid.SetColumn(valuePanel, 1);
             
-            // Ana grid'e ekle
-            Grid.SetColumn(labelBorder, 0);
-            Grid.SetColumn(valueBorder, 1);
-            
-            rowGrid.Children.Add(labelBorder);
-            rowGrid.Children.Add(valueBorder);
+            rowGrid.Children.Add(labelText);
+            rowGrid.Children.Add(valuePanel);
             
             Grid.SetRow(rowGrid, row);
             grid.Children.Add(rowGrid);
