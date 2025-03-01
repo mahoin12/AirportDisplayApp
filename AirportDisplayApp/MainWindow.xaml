@@ -9,45 +9,8 @@
         WindowStyle="None" 
         WindowState="Maximized" 
         ResizeMode="NoResize"
-        Background="#EBEBEB"
+        Background="#F5F5F5"
         KeyDown="MainWindow_KeyDown">
     
-    <!-- 
-        UI is created programmatically in MainWindow.xaml.cs 
-        But we can define some common resources here
-    -->
-    <Window.Resources>
-        <!-- Text styles -->
-        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-        </Style>
-        
-        <Style x:Key="LabelTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-        
-        <Style x:Key="ValueTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="Red"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-        
-        <!-- Border styles -->
-        <Style x:Key="PanelBorderStyle" TargetType="Border">
-            <Setter Property="BorderBrush" Value="DarkGray"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        
-        <Style x:Key="HeaderBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="#F09696"/> <!-- Belirgin kırmızı -->
-            <Setter Property="Height" Value="40"/>
-        </Style>
-    </Window.Resources>
+    <!-- UI tamamen programatik olarak oluşturulacak -->
 </Window>
