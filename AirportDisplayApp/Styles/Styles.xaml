@@ -1,0 +1,329 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Renk Paletleri -->
+    <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#00A0C6"/>
+    <SolidColorBrush x:Key="DefaultBackgroundBrush" Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="#DDDDDD"/>
+    <SolidColorBrush x:Key="ValueTextBrush" Color="#000000"/>
+    <SolidColorBrush x:Key="LabelTextBrush" Color="#444444"/>
+    <SolidColorBrush x:Key="HeaderTextBrush" Color="White"/>
+    <SolidColorBrush x:Key="RunwayHighlightBrush" Color="#00A0C6"/>
+    <SolidColorBrush x:Key="WindSpeedBrush" Color="#FFECEC"/>
+    
+    <!-- Metin Stilleri -->
+    <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource HeaderTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="SubHeaderTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource HeaderTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="TimeDisplayStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource HeaderTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Margin" Value="0,0,20,0"/>
+    </Style>
+    
+    <Style x:Key="LabelTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource LabelTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="8,0,0,0"/>
+    </Style>
+    
+    <Style x:Key="ValueTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource ValueTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Margin" Value="0,0,5,0"/>
+    </Style>
+    
+    <Style x:Key="UnitTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource LabelTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="2,0,0,0"/>
+    </Style>
+    
+    <Style x:Key="MetarTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource ValueTextBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+    
+    <Style x:Key="StatusTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource LabelTextBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="10,0,0,0"/>
+    </Style>
+    
+    <!-- Panel Stilleri -->
+    <Style x:Key="MainGridStyle" TargetType="Grid">
+        <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
+    </Style>
+    
+    <Style x:Key="HeaderBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource HeaderBackgroundBrush}"/>
+        <Setter Property="Height" Value="60"/>
+    </Style>
+    
+    <Style x:Key="StatusBarBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0,1,0,1"/>
+        <Setter Property="Height" Value="30"/>
+    </Style>
+    
+    <Style x:Key="RunwayPanelBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+    
+    <Style x:Key="RunwayHeaderStyle" TargetType="Border">
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Height" Value="40"/>
+    </Style>
+    
+    <Style x:Key="DataGridRowStyle" TargetType="Grid">
+        <Setter Property="Height" Value="30"/>
+    </Style>
+    
+    <Style x:Key="MetarBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
+        <Setter Property="Margin" Value="5,0,5,5"/>
+    </Style>
+    
+    <Style x:Key="FooterBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource DefaultBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        <Setter Property="Height" Value="30"/>
+    </Style>
+    
+    <Style x:Key="WindIndicatorCircleStyle" TargetType="Ellipse">
+        <Setter Property="Stroke" Value="LightGray"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="Fill" Value="White"/>
+        <Setter Property="Width" Value="260"/>
+        <Setter Property="Height" Value="260"/>
+    </Style>
+    
+    <Style x:Key="WindValueBoxStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource WindSpeedBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    
+    <Style x:Key="TabButtonStyle" TargetType="Button">
+        <Setter Property="Padding" Value="15,5"/>
+        <Setter Property="Background" Value="#EEF5F7"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="1,1,1,0"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4,4,0,0">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#D5EAF5"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#C0E0F0"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+        <Setter Property="Background" Value="#00A0C6"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    
+    <Style x:Key="StandardButtonStyle" TargetType="Button">
+        <Setter Property="Padding" Value="15,3"/>
+        <Setter Property="Margin" Value="5,0"/>
+        <Setter Property="Background" Value="#EEEEEE"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E0E0E0"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#D0D0D0"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- Rüzgar Ok Stilini -->
+    <Style x:Key="WindArrowStyle" TargetType="Rectangle">
+        <Setter Property="Width" Value="12"/>
+        <Setter Property="Height" Value="80"/>
+        <Setter Property="Fill" Value="DarkGray"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.9"/>
+    </Style>
+    
+    <!-- Pist Göstergesi Stili -->
+    <Style x:Key="RunwayIndicatorStyle" TargetType="Rectangle">
+        <Setter Property="Width" Value="12"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Fill" Value="Black"/>
+    </Style>
+    
+    <!-- Blok tabanlı tasarım için stiller -->
+    <Style x:Key="DataBlockStyle" TargetType="Border">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="2,2,2,2"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Padding" Value="5,3"/>
+    </Style>
+
+    <Style x:Key="DataLabelStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#444444"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <Style x:Key="DataValueStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="DataUnitStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#666666"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="3,0,0,0"/>
+    </Style>
+
+    <Style x:Key="RunwayHeaderLabelStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- RunwayPanel ve WindIndicator stilleri -->
+    <Style x:Key="RunwayPanelStyleV2" TargetType="Border">
+        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+
+    <Style x:Key="RunwayHeaderStyleV2" TargetType="Border">
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Height" Value="30"/>
+    </Style>
+
+    <!-- Rüzgar Göstergesi için yeni stiller -->
+    <Style x:Key="WindRoseV2" TargetType="Ellipse">
+        <Setter Property="Stroke" Value="#E0E0E0"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="Fill" Value="White"/>
+        <Setter Property="Width" Value="240"/>
+        <Setter Property="Height" Value="240"/>
+    </Style>
+
+    <Style x:Key="WindDirectionTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Foreground" Value="#444444"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="WindValueStyleV2" TargetType="Border">
+        <Setter Property="Background" Value="#FFECEC"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="20"/>
+    </Style>
+
+    <Style x:Key="WindValueTextStyleV2" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="DarkRed"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Merkez Panel -->
+    <Style x:Key="CenterPanelStyleV2" TargetType="Border">
+        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="3"/>
+    </Style>
+
+    <Style x:Key="CenterPanelHeaderStyleV2" TargetType="Border">
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="Height" Value="30"/>
+    </Style>
+
+    <!-- Çizgisiz Tablo İçin -->
+    <Style x:Key="DataRowStyle" TargetType="Grid">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Height" Value="24"/>
+    </Style>
+
+    <!-- Alternatif satır renklendirmesi için -->
+    <Style x:Key="AlternateDataRowStyle" TargetType="Grid">
+        <Setter Property="Background" Value="#F0F0F0"/>
+        <Setter Property="Height" Value="24"/>
+    </Style>
+</ResourceDictionary>

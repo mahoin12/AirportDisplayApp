@@ -24,11 +24,49 @@ namespace AirportDisplayApp.UI
             LoadStyles();
         }
 
+        // UIComponents.cs içindeki LoadStyles metodu düzeltildi
+
         private void LoadStyles()
         {
-            _styles = new ResourceDictionary();
-            _styles.Source = new Uri("/AirportDisplayApp;component/Styles/Styles.xaml", UriKind.Relative);
-            _owner.Resources.MergedDictionaries.Add(_styles);
+            try
+            {
+                // Styles.xaml'ı pack URI formatında yükle
+                _styles = new ResourceDictionary();
+                _styles.Source = new Uri("/AirportDisplayApp;component/Styles/Styles.xaml", UriKind.RelativeOrAbsolute);
+                _owner.Resources.MergedDictionaries.Add(_styles);
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda varsayılan stilleri kullan
+                MessageBox.Show($"Stil dosyası yüklenemedi: {ex.Message}\nVarsayılan stiller kullanılacak.",
+                    "Stil Yükleme Hatası",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                // Varsayılan stil sözlüğü oluştur
+                _styles = new ResourceDictionary();
+
+                // Temel renk tanımları
+                _styles["HeaderBackgroundBrush"] = new SolidColorBrush(Colors.DodgerBlue);
+                _styles["DefaultBackgroundBrush"] = new SolidColorBrush(Colors.WhiteSmoke);
+                _styles["BorderBrush"] = new SolidColorBrush(Colors.LightGray);
+                _styles["ValueTextBrush"] = new SolidColorBrush(Colors.Black);
+                _styles["LabelTextBrush"] = new SolidColorBrush(Color.FromRgb(68, 68, 68));
+                _styles["HeaderTextBrush"] = new SolidColorBrush(Colors.White);
+                _styles["RunwayHighlightBrush"] = new SolidColorBrush(Colors.DodgerBlue);
+                _styles["WindSpeedBrush"] = new SolidColorBrush(Color.FromRgb(255, 236, 236));
+
+                // Temel stil tanımları
+                Style headerTextStyle = new Style(typeof(TextBlock));
+                headerTextStyle.Setters.Add(new Setter(TextBlock.FontSizeProperty, 20.0));
+                headerTextStyle.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.Bold));
+                headerTextStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, _styles["HeaderTextBrush"]));
+                headerTextStyle.Setters.Add(new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center));
+                headerTextStyle.Setters.Add(new Setter(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center));
+                _styles["HeaderTextStyle"] = headerTextStyle;
+
+                // Diğer stiller de benzer şekilde buraya eklenebilir...
+            }
         }
 
         #region Ana UI Bileşenleri

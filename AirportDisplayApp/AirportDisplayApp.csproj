@@ -7,4 +7,14 @@
         <StartupObject>AirportDisplayApp.Program</StartupObject>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Remove="Styles\Styles.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Resource Include="Styles\Styles.xaml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Resource>
+    </ItemGroup>
+
 </Project>

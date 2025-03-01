@@ -7,8 +7,8 @@
         <!-- Uygulama düzeyinde stil sözlüklerini buraya ekle -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Styles.xaml referansı -->
-                <ResourceDictionary Source="/Styles/Styles.xaml"/>
+                <!-- Styles.xaml referansı - düzeltilmiş yol -->
+                <ResourceDictionary Source="/AirportDisplayApp;component/Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
