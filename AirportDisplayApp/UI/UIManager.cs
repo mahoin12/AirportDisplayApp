@@ -189,20 +189,19 @@ namespace AirportDisplayApp.UI
         }
         
         /// <summary>
-        /// Rüzgar yönü okunu günceller
+        /// Rüzgar verilerini ilgili runway panel bileşenine iletir
         /// </summary>
-        public void UpdateWindDirection(string runway, double direction)
+        public void UpdateWindDirection(string runway, AirportDisplayApp.Models.RunwayDataModel data)
         {
-            string arrowName = runway == "RWY 35" ? "LeftWindArrow" : "RightWindArrow";
-            
-            // RunwayPanelComponent'e yönlendir
+            // Sadece ilgili runway panel bileşenine veriyi ilet, 
+            // işlemeyi onun yapmasına izin ver
             if (runway == "RWY 35")
             {
-                _leftRunwayComponent.UpdateWindDirection(direction);
+                _leftRunwayComponent.UpdateWindDirection(data);
             }
             else
             {
-                _rightRunwayComponent.UpdateWindDirection(direction);
+                _rightRunwayComponent.UpdateWindDirection(data);
             }
         }
         

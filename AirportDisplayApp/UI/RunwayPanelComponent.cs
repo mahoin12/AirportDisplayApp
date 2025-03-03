@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using AirportDisplayApp.Models;
 
 namespace AirportDisplayApp.UI
 {
@@ -418,11 +419,62 @@ namespace AirportDisplayApp.UI
         }
         
         /// <summary>
-        /// Rüzgar yönünü WindIndicatorComponent üzerinden günceller
+        /// Tüm rüzgar verilerini güncelleyen, WindIndicatorComponent ve metin alanlarını yöneten metot
+        /// </summary>
+        public void UpdateWindDirection(AirportDisplayApp.Models.RunwayDataModel data)
+        {
+            // 1. WindIndicator bileşenini güncelle
+            if (_windIndicator != null)
+            {
+                // Rüzgar yönlerini güncelle
+                _windIndicator.UpdateWindDirections(
+                    data.Min2Direction,
+                    data.Avg2Direction,
+                    data.Max2Direction, 
+                    data.Min10Direction,
+                    data.Avg10Direction,
+                    data.Max10Direction
+                );
+        
+                // Rüzgar hızını güncelle
+                _windIndicator.UpdateWindSpeed(data.WindSpeed);
+            }
+    
+            // 2. Tablodaki ilgili metin alanlarını güncelle
+            UpdateTextValue("2MinDir", data.Min2Direction);
+            UpdateTextValue("2MinSpeed", data.Min2Speed);
+            UpdateTextValue("2AvgDir", data.Avg2Direction);
+            UpdateTextValue("2AvgSpeed", data.Avg2Speed);
+            UpdateTextValue("2MaxDir", data.Max2Direction);
+            UpdateTextValue("2MaxSpeed", data.Max2Speed);
+            UpdateTextValue("HwCw", data.HwCw);
+    
+            // Base alanı sadece sol pist (RWY 35) için var
+            if (_runwayName == "RWY 35" && !string.IsNullOrEmpty(data.Base))
+            {
+                UpdateTextValue("baseValue", data.Base);
+            }
+    
+            UpdateTextValue("10MinDir", data.Min10Direction);
+            UpdateTextValue("10MinSpeed", data.Min10Speed);
+            UpdateTextValue("10AvgDir", data.Avg10Direction);
+            UpdateTextValue("10AvgSpeed", data.Avg10Speed);
+            UpdateTextValue("10MaxDir", data.Max10Direction);
+            UpdateTextValue("10MaxSpeed", data.Max10Speed);
+            UpdateTextValue("QfeValue", data.QFE);
+            UpdateTextValue("QfeMmValue", data.QFEInHg);
+        }
+        
+        
+        /// <summary>
+        /// Geriye dönük uyumluluk için, sadece rüzgar okunu/üçgenini güncelleyen metot
         /// </summary>
         public void UpdateWindDirection(double direction)
         {
-            _windIndicator.UpdateWindDirection(direction);
+            if (_windIndicator != null)
+            {
+                _windIndicator.UpdateWindDirection(direction);
+            }
         }
         
         /// <summary>

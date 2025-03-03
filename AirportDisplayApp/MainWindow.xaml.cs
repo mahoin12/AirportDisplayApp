@@ -74,16 +74,17 @@ namespace AirportDisplayApp
                 _uiManager.UpdateConnectionStatus(status);
             });
         }
-        
+
         private void DataService_DataUpdated(object sender, AirportDataModel data)
         {
             // UI thread'inde verileri güncelle
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 // Genel bilgileri güncelle
                 _uiManager.UpdateDisplayElement("time", data.Time);
                 _uiManager.UpdateDisplayElement("runwayInUse", data.RunwayInUse);
                 _uiManager.UpdateDisplayElement("rwyInUseInfo", data.RwyInUseInfo);
-                
+
                 // Merkez panel verilerini güncelle
                 _uiManager.UpdateDisplayElement("qnh", data.QNH);
                 _uiManager.UpdateDisplayElement("qnhInHg", data.QNHInHg);
@@ -96,11 +97,19 @@ namespace AirportDisplayApp
                 _uiManager.UpdateDisplayElement("tempMax", data.TempMax);
                 _uiManager.UpdateDisplayElement("tempMin", data.TempMin);
                 _uiManager.UpdateDisplayElement("runwayTemp", data.RunwayTemp);
-                
+
                 // METAR bilgisini güncelle
                 _uiManager.UpdateDisplayElement("metar", data.Metar);
-                
-                // RWY 35 verilerini güncelle
+
+                // Eski stil güncelleme:
+                // _uiManager.UpdateWindDirection("RWY 35", data.Runway35.AvgWindDirection);
+                // _uiManager.UpdateWindDirection("RWY 17", data.Runway17.AvgWindDirection);
+
+                // YENİ: Rüzgar oklarını ve yön göstergelerini güncelle - tam RunwayDataModel ile
+                _uiManager.UpdateWindDirection("RWY 35", data.Runway35);
+                _uiManager.UpdateWindDirection("RWY 17", data.Runway17);
+
+                // Diğer metin güncellemelerini korumalıyız
                 _uiManager.UpdateDisplayElement("leftWindSpeed", data.Runway35.WindSpeed);
                 _uiManager.UpdateDisplayElement("left2MinDir", data.Runway35.Min2Direction);
                 _uiManager.UpdateDisplayElement("left2MinSpeed", data.Runway35.Min2Speed);
@@ -118,8 +127,7 @@ namespace AirportDisplayApp
                 _uiManager.UpdateDisplayElement("left10MaxSpeed", data.Runway35.Max10Speed);
                 _uiManager.UpdateDisplayElement("leftQfeValue", data.Runway35.QFE);
                 _uiManager.UpdateDisplayElement("leftQfeMm", data.Runway35.QFEInHg);
-                
-                // RWY 17 verilerini güncelle
+
                 _uiManager.UpdateDisplayElement("rightWindSpeed", data.Runway17.WindSpeed);
                 _uiManager.UpdateDisplayElement("right2MinDir", data.Runway17.Min2Direction);
                 _uiManager.UpdateDisplayElement("right2MinSpeed", data.Runway17.Min2Speed);
@@ -136,13 +144,9 @@ namespace AirportDisplayApp
                 _uiManager.UpdateDisplayElement("right10MaxSpeed", data.Runway17.Max10Speed);
                 _uiManager.UpdateDisplayElement("rightQfeValue", data.Runway17.QFE);
                 _uiManager.UpdateDisplayElement("rightQfeMm", data.Runway17.QFEInHg);
-                
-                // Rüzgar oklarını güncelle
-                _uiManager.UpdateWindDirection("RWY 35", data.Runway35.AvgWindDirection);
-                _uiManager.UpdateWindDirection("RWY 17", data.Runway17.AvgWindDirection);
             });
         }
-        
+
         private void RefreshData()
         {
             // Verileri yenile
