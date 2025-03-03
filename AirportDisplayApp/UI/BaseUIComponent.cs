@@ -28,16 +28,30 @@ namespace AirportDisplayApp.UI
         public abstract FrameworkElement Create(Grid parent, int row, int column);
 
         /// <summary>
-        /// TextBlock öğesine kaydet ve görüntüleme sözlüğüne ekle
+        /// TextBlock öğesine benzersiz bir isim vererek kaydet ve görüntüleme sözlüğüne ekle
         /// </summary>
         protected void RegisterTextElement(TextBlock element, string key)
         {
             if (element != null && !string.IsNullOrEmpty(key))
             {
-                string name = key + "Value";
-                element.Name = name;
-                _owner.RegisterName(name, element);
-                _displayElements[key] = element;
+                // Her bileşen sınıfı için benzersiz bir önek oluştur
+                string componentPrefix = this.GetType().Name.Replace("Component", "");
+                string uniqueName = $"{componentPrefix}_{key}Value";
+                
+                try
+                {
+                    element.Name = uniqueName;
+                    _owner.RegisterName(uniqueName, element);
+                    _displayElements[key] = element;
+                }
+                catch (ArgumentException)
+                {
+                    // Eğer isim zaten kullanımdaysa, rastgele bir sayı ekleyerek tekrar dene
+                    string altName = $"{uniqueName}_{Guid.NewGuid().ToString().Substring(0, 8)}";
+                    element.Name = altName;
+                    _owner.RegisterName(altName, element);
+                    _displayElements[key] = element;
+                }
             }
         }
 

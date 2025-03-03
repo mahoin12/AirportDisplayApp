@@ -19,9 +19,9 @@ namespace AirportDisplayApp.UI
 
         public override FrameworkElement Create(Grid parent, int row, int column)
         {
-            // Referans ekran görüntüsüne göre gri arka plan üzerinde text
+            // Referans görüntüye daha uygun gri arka plan
             Border metarBorder = new Border();
-            metarBorder.Background = Brushes.White;
+            metarBorder.Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)); // Açık gri
             metarBorder.BorderBrush = Brushes.LightGray;
             metarBorder.BorderThickness = new Thickness(1);
             metarBorder.Margin = new Thickness(5, 0, 5, 5);
@@ -31,27 +31,33 @@ namespace AirportDisplayApp.UI
             metarGrid.ColumnDefinitions.Add(new ColumnDefinition());
             
             // METAR etiketi
+            Border labelBorder = new Border();
+            labelBorder.Background = new SolidColorBrush(Color.FromRgb(220, 220, 220)); // Orta gri
+            labelBorder.Padding = new Thickness(5);
+            
             TextBlock metarLabel = new TextBlock();
             metarLabel.Text = "METAR";
             metarLabel.FontWeight = FontWeights.Bold;
-            metarLabel.Margin = new Thickness(10, 5, 10, 5);
+            metarLabel.Margin = new Thickness(5, 0, 5, 0);
             metarLabel.VerticalAlignment = VerticalAlignment.Center;
+            
+            labelBorder.Child = metarLabel;
             
             // METAR değeri
             TextBlock metarText = new TextBlock();
             // Örnek METAR değeri - referans ekran görüntüsündeki değer
             metarText.Text = "METAR LTBL 060950Z 29004KT 240V340 9999 FEW035 SCT100 31/20 Q1013 NOSIG RMK RWY17 28006KT 230V320";
-            metarText.Padding = new Thickness(5);
+            metarText.Padding = new Thickness(10, 5, 5, 5);
             metarText.TextWrapping = TextWrapping.Wrap;
             metarText.VerticalAlignment = VerticalAlignment.Center;
             
             // METAR değerini kaydet
             RegisterTextElement(metarText, "metar");
             
-            Grid.SetColumn(metarLabel, 0);
+            Grid.SetColumn(labelBorder, 0);
             Grid.SetColumn(metarText, 1);
             
-            metarGrid.Children.Add(metarLabel);
+            metarGrid.Children.Add(labelBorder);
             metarGrid.Children.Add(metarText);
             
             metarBorder.Child = metarGrid;

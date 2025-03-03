@@ -40,8 +40,15 @@ namespace AirportDisplayApp.UI
             ScrollViewer contentScrollViewer = new ScrollViewer();
             contentScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             
+            // İçerik için Border ve kenar çizgileri
+            Border contentBorder = new Border();
+            contentBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+            contentBorder.BorderThickness = new Thickness(0, 1, 0, 0);
+            
             Grid contentGrid = CreateContentGrid();
-            contentScrollViewer.Content = contentGrid;
+            contentBorder.Child = contentGrid;
+            
+            contentScrollViewer.Content = contentBorder;
             
             centerGrid.Children.Add(contentScrollViewer);
             Grid.SetRow(contentScrollViewer, 1);
@@ -84,7 +91,7 @@ namespace AirportDisplayApp.UI
             contentGrid.Margin = new Thickness(10);
             
             // Satırlar - Referans ekran görüntüsündeki merkez panelin satır sayısı
-            for (int i = 0; i < 14; i++)
+            for (int i = 0; i < 15; i++)
             {
                 contentGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
             }
@@ -106,8 +113,8 @@ namespace AirportDisplayApp.UI
             // QFE SYNOP
             CreateDataRow(contentGrid, rowIndex++, "QFE SYNOP", "1012.7", "hPa", "qfeSynop");
             
-            // SKY AERODROME header
-            CreateHeaderRow(contentGrid, rowIndex++, "SKY AERODROME");
+            // SKY AERODROME header - Özel stil ile başlık olarak oluştur
+            CreateSectionHeader(contentGrid, rowIndex++, "SKY AERODROME");
             
             // HIGH
             CreateDataRow(contentGrid, rowIndex++, "HIGH", "", "ft", "high");
@@ -140,32 +147,50 @@ namespace AirportDisplayApp.UI
         }
         
         /// <summary>
-        /// Başlık satırı oluşturur
+        /// Bölüm başlık satırı oluşturur - SKY AERODROME başlığı için özel stil
         /// </summary>
-        private void CreateHeaderRow(Grid grid, int row, string headerText)
+        private void CreateSectionHeader(Grid grid, int row, string headerText)
         {
+            // Başlık satırı için özel border - Koyu renkli arka plan ve belirgin kenar çizgisi
+            Border sectionBorder = new Border();
+            sectionBorder.Background = new SolidColorBrush(Color.FromRgb(220, 220, 220)); // Daha koyu gri arka plan
+            sectionBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
+            sectionBorder.BorderThickness = new Thickness(0, 1, 0, 1); // Üst ve alt kenarlarda belirgin çizgi
+            sectionBorder.Padding = new Thickness(5, 2, 5, 2);
+            
+            // İç Grid
+            Grid innerGrid = new Grid();
+            
             TextBlock headerLabel = new TextBlock();
             headerLabel.Text = headerText;
             headerLabel.FontSize = 14;
-            headerLabel.FontWeight = FontWeights.Bold;
+            headerLabel.FontWeight = FontWeights.Bold; // Kalın font ağırlığı
             headerLabel.VerticalAlignment = VerticalAlignment.Center;
             headerLabel.HorizontalAlignment = HorizontalAlignment.Left;
             headerLabel.Margin = new Thickness(5, 0, 0, 0);
             
-            Grid.SetRow(headerLabel, row);
-            grid.Children.Add(headerLabel);
+            innerGrid.Children.Add(headerLabel);
+            sectionBorder.Child = innerGrid;
+            
+            Grid.SetRow(sectionBorder, row);
+            grid.Children.Add(sectionBorder);
         }
         
         /// <summary>
-        /// Veri satırı oluşturur
+        /// Veri satırı oluşturur - Geliştirilmiş hizalama ile
         /// </summary>
         private void CreateDataRow(Grid grid, int row, string label, string value, string unit, string valueKey)
         {
+            // Her satır için border oluştur - kenar çizgisi için
+            Border rowBorder = new Border();
+            rowBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(230, 230, 230));
+            rowBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+            
             Grid rowGrid = new Grid();
             
             // İki sütunlu düzen
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(100) }); // Etiket
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition());                               // Değer ve birim
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition());                              // Değer ve birim
             
             // Etiket
             TextBlock labelText = new TextBlock();
@@ -175,9 +200,10 @@ namespace AirportDisplayApp.UI
             labelText.HorizontalAlignment = HorizontalAlignment.Left;
             labelText.Margin = new Thickness(5, 0, 0, 0);
             
-            // Değer ve birim için panel
+            // Değer ve birim için panel - Hizalama düzeltildi
             StackPanel valuePanel = new StackPanel();
             valuePanel.Orientation = Orientation.Horizontal;
+            // Ekran görüntüsüne göre değerler solda olmalı, bu nedenle panel hizalamasını değiştir
             valuePanel.HorizontalAlignment = HorizontalAlignment.Left;
             
             // Değer
@@ -187,6 +213,7 @@ namespace AirportDisplayApp.UI
             valueText.FontWeight = FontWeights.Bold;
             valueText.Foreground = Brushes.Black;
             valueText.VerticalAlignment = VerticalAlignment.Center;
+            // Sağa hizalama gerekmiyor - referans görüntüye göre solda
             valueText.Margin = new Thickness(0, 0, 5, 0);
             
             RegisterTextElement(valueText, valueKey);
@@ -210,8 +237,10 @@ namespace AirportDisplayApp.UI
             rowGrid.Children.Add(labelText);
             rowGrid.Children.Add(valuePanel);
             
-            Grid.SetRow(rowGrid, row);
-            grid.Children.Add(rowGrid);
+            rowBorder.Child = rowGrid;
+            
+            Grid.SetRow(rowBorder, row);
+            grid.Children.Add(rowBorder);
         }
     }
 }

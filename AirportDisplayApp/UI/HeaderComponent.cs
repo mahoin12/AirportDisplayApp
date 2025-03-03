@@ -24,13 +24,13 @@ namespace AirportDisplayApp.UI
         {
             // Referans görüntüye göre turkuaz/mavi arka plan
             Border headerBorder = new Border();
-            headerBorder.Background = new SolidColorBrush(Color.FromRgb(0, 156, 178)); // Turkuaz
+            headerBorder.Background = new SolidColorBrush(Color.FromRgb(0, 160, 198)); // Türkiz/mavi (referans görüntüye göre ayarlandı)
             headerBorder.Height = 60;
             
             Grid headerGrid = new Grid();
-            headerGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Sol
-            headerGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Orta
-            headerGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Sağ
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) }); // Sol
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) }); // Orta
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) }); // Sağ
             
             // Sol taraf - VAISALA logo/isim
             TextBlock vaisalaText = new TextBlock();
@@ -52,14 +52,29 @@ namespace AirportDisplayApp.UI
             airportText.HorizontalAlignment = HorizontalAlignment.Center;
             
             // Sağ taraf - Saat göstergesi (HH:MM:SS)
+            StackPanel timePanel = new StackPanel();
+            timePanel.Orientation = Orientation.Horizontal;
+            timePanel.HorizontalAlignment = HorizontalAlignment.Right;
+            timePanel.VerticalAlignment = VerticalAlignment.Center;
+            timePanel.Margin = new Thickness(0, 0, 20, 0);
+            
             _timeDisplay = new TextBlock();
             _timeDisplay.Text = DateTime.Now.ToString("HH:mm:ss");
             _timeDisplay.FontSize = 20;
             _timeDisplay.FontWeight = FontWeights.Bold;
             _timeDisplay.Foreground = Brushes.White;
             _timeDisplay.VerticalAlignment = VerticalAlignment.Center;
-            _timeDisplay.HorizontalAlignment = HorizontalAlignment.Right;
-            _timeDisplay.Margin = new Thickness(0, 0, 20, 0);
+            
+            // UTC etiketi - ilk resimde olduğu gibi
+            TextBlock utcLabel = new TextBlock();
+            utcLabel.Text = "UTC";
+            utcLabel.FontSize = 14;
+            utcLabel.Foreground = Brushes.White;
+            utcLabel.VerticalAlignment = VerticalAlignment.Center;
+            utcLabel.Margin = new Thickness(5, 0, 0, 0);
+            
+            timePanel.Children.Add(_timeDisplay);
+            timePanel.Children.Add(utcLabel);
             
             // Saat göstergesini kaydet
             RegisterTextElement(_timeDisplay, "time");
@@ -70,13 +85,36 @@ namespace AirportDisplayApp.UI
             timer.Tick += (s, e) => UpdateClock();
             timer.Start();
             
+            // Sağ taraftaki ek göstergeler (varsa) - referans görüntüye göre
+            StackPanel rightPanel = new StackPanel();
+            rightPanel.Orientation = Orientation.Horizontal;
+            rightPanel.HorizontalAlignment = HorizontalAlignment.Right;
+            rightPanel.VerticalAlignment = VerticalAlignment.Center;
+            rightPanel.Margin = new Thickness(0, 0, 20, 0);
+            
+            // İcon göstergeleri (referans görüntüdeki gibi)
+            StackPanel iconsPanel = new StackPanel();
+            iconsPanel.Orientation = Orientation.Horizontal;
+            iconsPanel.Margin = new Thickness(0, 0, 15, 0);
+            
+            // Daylight-Day/Night göstergesi
+            TextBlock daylightLabel = new TextBlock();
+            daylightLabel.Text = "Daylight";
+            daylightLabel.FontSize = 12;
+            daylightLabel.Foreground = Brushes.White;
+            daylightLabel.VerticalAlignment = VerticalAlignment.Center;
+            daylightLabel.Margin = new Thickness(0, 0, 10, 0);
+            
+            // Burada ikon göstergeleri oluşturulabilir (NEC logosu vs. referans resimde)
+            
+            // Elemanları Grid'e ekle
             Grid.SetColumn(vaisalaText, 0);
             Grid.SetColumn(airportText, 1);
-            Grid.SetColumn(_timeDisplay, 2);
+            Grid.SetColumn(timePanel, 2);
             
             headerGrid.Children.Add(vaisalaText);
             headerGrid.Children.Add(airportText);
-            headerGrid.Children.Add(_timeDisplay);
+            headerGrid.Children.Add(timePanel);
             
             headerBorder.Child = headerGrid;
             

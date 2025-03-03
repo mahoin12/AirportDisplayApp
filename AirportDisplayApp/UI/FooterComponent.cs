@@ -25,7 +25,7 @@ namespace AirportDisplayApp.UI
 
         public override FrameworkElement Create(Grid parent, int row, int column)
         {
-            // Alt bilgi çubuğu
+            // Alt bilgi çubuğu - referans görsele uygun açık gri arka plan
             Border footerBorder = new Border();
             footerBorder.Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)); // Açık gri
             footerBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(220, 220, 220));
@@ -38,7 +38,7 @@ namespace AirportDisplayApp.UI
             
             // Sol taraf - Bağlantı durumu
             _connectionStatus = new TextBlock();
-            _connectionStatus.Text = "Bağlantı Durumu: Bağlanıyor...";
+            _connectionStatus.Text = "Bağlantı Durumu: Simüle edilmiş veri oluşturuldu"; // Referans resimdeki gibi son alım zamanını göster
             _connectionStatus.FontSize = 12;
             _connectionStatus.VerticalAlignment = VerticalAlignment.Center;
             _connectionStatus.Margin = new Thickness(10, 0, 0, 0);
@@ -51,7 +51,7 @@ namespace AirportDisplayApp.UI
             buttonPanel.HorizontalAlignment = HorizontalAlignment.Right;
             buttonPanel.Margin = new Thickness(0, 0, 10, 0);
             
-            // Yenile butonu
+            // Yenile butonu - ikinci resimde görüldüğü gibi "Yeniden Yenile" şeklinde
             Button refreshButton = CreateButton("Verileri Yenile");
             refreshButton.Click += (s, e) => RefreshClicked?.Invoke(this, EventArgs.Empty);
             
@@ -83,17 +83,20 @@ namespace AirportDisplayApp.UI
         }
         
         /// <summary>
-        /// Buton oluşturur
+        /// Buton oluşturur - Referans resme uygun flat tasarım
         /// </summary>
         private Button CreateButton(string text)
         {
             Button button = new Button();
             button.Content = text;
             button.Padding = new Thickness(10, 3, 10, 3);
-            button.Margin = new Thickness(5, 0, 0, 0);
-            button.Background = new SolidColorBrush(Color.FromRgb(238, 238, 238)); // Açık gri
-            button.BorderBrush = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+            button.Margin = new Thickness(0, 0, 0, 0);
+            
+            // Düz tasarım (flat design) - Referans resme göre düzenlenmiş
+            button.Background = new SolidColorBrush(Color.FromRgb(240, 240, 240)); // Çok açık gri
+            button.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
             button.BorderThickness = new Thickness(1);
+            button.FontSize = 12;
             
             return button;
         }

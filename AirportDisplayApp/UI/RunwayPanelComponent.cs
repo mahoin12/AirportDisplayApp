@@ -13,13 +13,14 @@ namespace AirportDisplayApp.UI
     public class RunwayPanelComponent : BaseUIComponent
     {
         private string _runwayName;
-        private Rectangle _windArrow;
+        private WindIndicatorComponent _windIndicator;
         
         public RunwayPanelComponent(Window owner, Dictionary<string, TextBlock> displayElements, 
                                    ResourceDictionary styles, string runwayName) 
             : base(owner, displayElements, styles)
         {
             _runwayName = runwayName;
+            _windIndicator = new WindIndicatorComponent(owner, runwayName);
         }
 
         public override FrameworkElement Create(Grid parent, int row, int column)
@@ -42,16 +43,23 @@ namespace AirportDisplayApp.UI
             runwayGrid.Children.Add(headerBorder);
             Grid.SetRow(headerBorder, 0);
             
-            // Rüzgar göstergesi
-            Grid windGrid = CreateWindIndicator();
+            // Rüzgar göstergesi - artık WindIndicatorComponent kullanıyor
+            Grid windGrid = _windIndicator.CreateWindIndicator();
             runwayGrid.Children.Add(windGrid);
             Grid.SetRow(windGrid, 1);
             
             // Veri tablosu
             Grid dataGrid = CreateDataGrid();
+            
+            // Veri tablosu için bir Border ekle
+            Border dataBorder = new Border();
+            dataBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+            dataBorder.BorderThickness = new Thickness(0, 1, 0, 0);
+            dataBorder.Child = dataGrid;
+            
             ScrollViewer scrollViewer = new ScrollViewer();
             scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            scrollViewer.Content = dataGrid;
+            scrollViewer.Content = dataBorder;
             
             runwayGrid.Children.Add(scrollViewer);
             Grid.SetRow(scrollViewer, 2);
@@ -83,154 +91,6 @@ namespace AirportDisplayApp.UI
             headerBorder.Child = headerText;
             
             return headerBorder;
-        }
-        
-        /// <summary>
-        /// Rüzgar göstergesini oluşturur - Referans görüntüye uygun olarak tasarlandı
-        /// </summary>
-        private Grid CreateWindIndicator()
-        {
-            Grid windGrid = new Grid();
-            windGrid.Margin = new Thickness(10);
-            
-            // Dış dairesel ölçek (Gri daire)
-            Ellipse outerCircle = new Ellipse();
-            outerCircle.Width = 240;
-            outerCircle.Height = 240;
-            outerCircle.Stroke = Brushes.LightGray;
-            outerCircle.StrokeThickness = 1;
-            outerCircle.Fill = Brushes.White;
-            outerCircle.HorizontalAlignment = HorizontalAlignment.Center;
-            outerCircle.VerticalAlignment = VerticalAlignment.Center;
-            
-            windGrid.Children.Add(outerCircle);
-            
-            // Rüzgar yönü için tick marks (30 derece aralıklarla)
-            Canvas directionMarksCanvas = new Canvas();
-            directionMarksCanvas.Width = 240;
-            directionMarksCanvas.Height = 240;
-            directionMarksCanvas.HorizontalAlignment = HorizontalAlignment.Center;
-            directionMarksCanvas.VerticalAlignment = VerticalAlignment.Center;
-            
-            // 30 derecelik aralıklarla çizgiler ve rakamlar
-            for (int angle = 0; angle < 360; angle += 30)
-            {
-                double radians = angle * Math.PI / 180;
-                double centerX = 120;
-                double centerY = 120;
-                
-                // İç çemberin ve dış çemberin yarıçapları
-                double innerRadius = 90;
-                double outerRadius = 110;
-                double textRadius = 120;
-                
-                // Tick çizgisi
-                Line tickLine = new Line();
-                tickLine.X1 = centerX + Math.Sin(radians) * innerRadius;
-                tickLine.Y1 = centerY - Math.Cos(radians) * innerRadius;
-                tickLine.X2 = centerX + Math.Sin(radians) * outerRadius;
-                tickLine.Y2 = centerY - Math.Cos(radians) * outerRadius;
-                tickLine.Stroke = Brushes.LightGray;
-                tickLine.StrokeThickness = 1;
-                
-                directionMarksCanvas.Children.Add(tickLine);
-                
-                // Açı etiketleri (03, 06, 09, ... şeklinde her 30 derecede bir)
-                string dirLabel = ((angle / 10) % 36).ToString("00");
-                TextBlock dirText = new TextBlock();
-                dirText.Text = dirLabel;
-                dirText.FontSize = 12;
-                
-                // Metin pozisyonu (dairenin dışında)
-                double textX = centerX + Math.Sin(radians) * textRadius - 8;
-                double textY = centerY - Math.Cos(radians) * textRadius - 8;
-                
-                Canvas.SetLeft(dirText, textX);
-                Canvas.SetTop(dirText, textY);
-                
-                directionMarksCanvas.Children.Add(dirText);
-                
-                // Ana yönler (00, 09, 18, 27) için renkli semboller (referansta turkuaz)
-                if (angle % 90 == 0)
-                {
-                    Ellipse dirMark = new Ellipse();
-                    dirMark.Width = 10;
-                    dirMark.Height = 10;
-                    dirMark.Fill = new SolidColorBrush(Color.FromRgb(0, 156, 178)); // Turkuaz
-                    
-                    double markX = centerX + Math.Sin(radians) * 75 - 5;
-                    double markY = centerY - Math.Cos(radians) * 75 - 5;
-                    
-                    Canvas.SetLeft(dirMark, markX);
-                    Canvas.SetTop(dirMark, markY);
-                    
-                    directionMarksCanvas.Children.Add(dirMark);
-                }
-                // Ara yönler (03, 06, 12, 15, 21, 24, 30, 33) için turkuaz çizgi
-                else
-                {
-                    Rectangle dirMark = new Rectangle();
-                    dirMark.Width = 8;
-                    dirMark.Height = 8;
-                    dirMark.Fill = new SolidColorBrush(Color.FromRgb(0, 156, 178)); // Turkuaz
-                    
-                    double markX = centerX + Math.Sin(radians) * 75 - 4;
-                    double markY = centerY - Math.Cos(radians) * 75 - 4;
-                    
-                    Canvas.SetLeft(dirMark, markX);
-                    Canvas.SetTop(dirMark, markY);
-                    
-                    directionMarksCanvas.Children.Add(dirMark);
-                }
-            }
-            
-            windGrid.Children.Add(directionMarksCanvas);
-            
-            // Daire içindeki rüzgar oku (gri)
-            _windArrow = new Rectangle();
-            _windArrow.Width = 20;
-            _windArrow.Height = 100;
-            _windArrow.Fill = Brushes.DarkGray;
-            _windArrow.HorizontalAlignment = HorizontalAlignment.Center;
-            _windArrow.VerticalAlignment = VerticalAlignment.Center;
-            _windArrow.RenderTransformOrigin = new Point(0.5, 1.0);  // Dönüş merkezi alt orta nokta
-            
-            // Dönüş transformu
-            TransformGroup transformGroup = new TransformGroup();
-            RotateTransform rotateTransform = new RotateTransform(0);  // Başlangıçta 0 derece
-            transformGroup.Children.Add(rotateTransform);
-            _windArrow.RenderTransform = transformGroup;
-            
-            // Ok adı (OK'un güncellenmesi için)
-            string arrowName = _runwayName == "RWY 35" ? "LeftWindArrow" : "RightWindArrow";
-            _owner.RegisterName(arrowName, _windArrow);
-            
-            windGrid.Children.Add(_windArrow);
-            
-            // Rüzgar hızı göstergesi (ortadaki sayı)
-            Border speedBorder = new Border();
-            speedBorder.Background = Brushes.White;
-            speedBorder.BorderBrush = Brushes.LightGray;
-            speedBorder.BorderThickness = new Thickness(1);
-            speedBorder.Width = 40;
-            speedBorder.Height = 30;
-            speedBorder.HorizontalAlignment = HorizontalAlignment.Center;
-            speedBorder.VerticalAlignment = VerticalAlignment.Center;
-            
-            TextBlock speedText = new TextBlock();
-            speedText.Text = _runwayName == "RWY 35" ? "7" : "5";  // Varsayılan değerler
-            speedText.FontSize = 18;
-            speedText.FontWeight = FontWeights.Bold;
-            speedText.VerticalAlignment = VerticalAlignment.Center;
-            speedText.HorizontalAlignment = HorizontalAlignment.Center;
-            
-            string speedKey = _runwayName == "RWY 35" ? "leftWindSpeed" : "rightWindSpeed";
-            RegisterTextElement(speedText, speedKey);
-            
-            speedBorder.Child = speedText;
-            windGrid.Children.Add(speedBorder);
-            
-            return windGrid;
         }
         
         /// <summary>
@@ -297,6 +157,11 @@ namespace AirportDisplayApp.UI
         private void CreateDataRow(Grid grid, int row, string label, string direction, string speed,
                                   string directionKey, string speedKey)
         {
+            // Her satır için bir border ekle - ilk resimde olan çizgi efektini vermek için
+            Border rowBorder = new Border();
+            rowBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(230, 230, 230));
+            rowBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+            
             Grid rowGrid = new Grid();
             
             // Üç sütunlu düzen
@@ -373,8 +238,10 @@ namespace AirportDisplayApp.UI
             rowGrid.Children.Add(labelText);
             rowGrid.Children.Add(dirPanel);
             
-            Grid.SetRow(rowGrid, row);
-            grid.Children.Add(rowGrid);
+            rowBorder.Child = rowGrid;
+            
+            Grid.SetRow(rowBorder, row);
+            grid.Children.Add(rowBorder);
         }
         
         /// <summary>
@@ -382,6 +249,11 @@ namespace AirportDisplayApp.UI
         /// </summary>
         private void CreateHwCwRow(Grid grid, int row, string label, string value, string valueKey)
         {
+            // Her satır için bir border ekle - ilk resimde olan çizgi efektini vermek için
+            Border rowBorder = new Border();
+            rowBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(230, 230, 230));
+            rowBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+            
             Grid rowGrid = new Grid();
             
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(70) });  // Etiket
@@ -410,8 +282,10 @@ namespace AirportDisplayApp.UI
             rowGrid.Children.Add(labelText);
             rowGrid.Children.Add(valueText);
             
-            Grid.SetRow(rowGrid, row);
-            grid.Children.Add(rowGrid);
+            rowBorder.Child = rowGrid;
+            
+            Grid.SetRow(rowBorder, row);
+            grid.Children.Add(rowBorder);
         }
         
         /// <summary>
@@ -419,6 +293,11 @@ namespace AirportDisplayApp.UI
         /// </summary>
         private void CreateBaseRow(Grid grid, int row, string label, string value, string valueKey)
         {
+            // Her satır için bir border ekle - ilk resimde olan çizgi efektini vermek için
+            Border rowBorder = new Border();
+            rowBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(230, 230, 230));
+            rowBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+            
             Grid rowGrid = new Grid();
             
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(70) });  // Etiket
@@ -456,8 +335,10 @@ namespace AirportDisplayApp.UI
             rowGrid.Children.Add(valueText);
             rowGrid.Children.Add(unitText);
             
-            Grid.SetRow(rowGrid, row);
-            grid.Children.Add(rowGrid);
+            rowBorder.Child = rowGrid;
+            
+            Grid.SetRow(rowBorder, row);
+            grid.Children.Add(rowBorder);
         }
         
         /// <summary>
@@ -466,6 +347,11 @@ namespace AirportDisplayApp.UI
         private void CreateQfeRow(Grid grid, int row, string label, string value, string inHgValue,
                                  string valueKey, string inHgKey)
         {
+            // Her satır için bir border ekle - ilk resimde olan çizgi efektini vermek için
+            Border rowBorder = new Border();
+            rowBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(230, 230, 230));
+            rowBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+            
             Grid rowGrid = new Grid();
             
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(70) });   // Etiket
@@ -525,30 +411,26 @@ namespace AirportDisplayApp.UI
             rowGrid.Children.Add(inHgText);
             rowGrid.Children.Add(inHgUnitText);
             
-            Grid.SetRow(rowGrid, row);
-            grid.Children.Add(rowGrid);
+            rowBorder.Child = rowGrid;
+            
+            Grid.SetRow(rowBorder, row);
+            grid.Children.Add(rowBorder);
         }
         
         /// <summary>
-        /// Rüzgar yönünü günceller
+        /// Rüzgar yönünü WindIndicatorComponent üzerinden günceller
         /// </summary>
         public void UpdateWindDirection(double direction)
         {
-            if (_windArrow != null)
-            {
-                // Transform grubunu al
-                TransformGroup group = _windArrow.RenderTransform as TransformGroup;
-                if (group != null && group.Children.Count > 0)
-                {
-                    // İlk transform (RotateTransform) dönme olmalı
-                    RotateTransform rotate = group.Children[0] as RotateTransform;
-                    if (rotate != null)
-                    {
-                        // Açıyı güncelle
-                        rotate.Angle = direction;
-                    }
-                }
-            }
+            _windIndicator.UpdateWindDirection(direction);
+        }
+        
+        /// <summary>
+        /// Rüzgar hızını WindIndicatorComponent üzerinden günceller
+        /// </summary>
+        public void UpdateWindSpeed(string speed)
+        {
+            _windIndicator.UpdateWindSpeed(speed);
         }
     }
 }

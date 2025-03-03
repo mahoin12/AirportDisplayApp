@@ -22,17 +22,38 @@ namespace AirportDisplayApp.UI
 
         public override FrameworkElement Create(Grid parent, int row, int column)
         {
-            // Referans görüntüye göre açık turkuaz/mavi arka plan
+            // Referans görüntüye göre daha açık mavi/turkuaz arka plan
             Border tabBarBorder = new Border();
-            tabBarBorder.Background = new SolidColorBrush(Color.FromRgb(200, 240, 248)); // Açık turkuaz
+            tabBarBorder.Background = new SolidColorBrush(Color.FromRgb(120, 209, 229)); // Açık mavi/turkuaz
             tabBarBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(180, 220, 230));
             tabBarBorder.BorderThickness = new Thickness(0, 0, 0, 1);
+            
+            // Ana grid
+            Grid tabBarGrid = new Grid();
+            tabBarGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Sekmeler
+            tabBarGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // RWY IN USE
             
             // Yatay tab butonları için StackPanel
             StackPanel tabPanel = new StackPanel();
             tabPanel.Orientation = Orientation.Horizontal;
             tabPanel.HorizontalAlignment = HorizontalAlignment.Left;
-            tabPanel.Margin = new Thickness(10, 5, 0, 5);
+            tabPanel.Margin = new Thickness(0, 2, 0, 2); // Daha az kenar boşluğu
+            
+            // İlk sol sekme bilgisi (RWY 17-35 - kt bilgisi)
+            Border infoTab = new Border();
+            infoTab.Background = new SolidColorBrush(Color.FromRgb(120, 190, 210)); // Daha koyu turkuaz
+            infoTab.Padding = new Thickness(10, 0, 10, 0);
+            infoTab.Margin = new Thickness(0, 0, 3, 0);
+            
+            TextBlock infoLabel = new TextBlock();
+            infoLabel.Text = "RWY 17-35 - kt";
+            infoLabel.Foreground = Brushes.White;
+            infoLabel.FontWeight = FontWeights.Normal;
+            infoLabel.VerticalAlignment = VerticalAlignment.Center;
+            infoLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            infoLabel.Padding = new Thickness(5);
+            
+            infoTab.Child = infoLabel;
             
             // İlk sekme (aktif) - RWY 17-35 - mps
             Button activeTab = CreateTabButton("RWY 17-35 - mps", true);
@@ -42,30 +63,51 @@ namespace AirportDisplayApp.UI
             Button reportsTab = CreateTabButton("Reports", false);
             reportsTab.Click += (s, e) => OnTabChanged("Reports");
             
-            // Sekmeler arası boşluk
-            reportsTab.Margin = new Thickness(5, 0, 0, 0);
-            
+            tabPanel.Children.Add(infoTab);
             tabPanel.Children.Add(activeTab);
             tabPanel.Children.Add(reportsTab);
             
-            // Sağ tarafta RWY IN USE göstergesi (referans görüntüye göre)
-            Grid tabBarGrid = new Grid();
-            tabBarGrid.ColumnDefinitions.Add(new ColumnDefinition()); // Tab butonları için
-            tabBarGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // RWY IN USE için
+            // Sağ tarafta RWY IN USE göstergesi
+            Border rwyInUseBorder = new Border();
+            rwyInUseBorder.Background = Brushes.Transparent;
+            rwyInUseBorder.Padding = new Thickness(5);
+            rwyInUseBorder.HorizontalAlignment = HorizontalAlignment.Right;
             
-            TextBlock rwyInUseText = new TextBlock();
-            rwyInUseText.Text = "RWY IN USE";
-            rwyInUseText.FontSize = 12;
-            rwyInUseText.FontWeight = FontWeights.Bold;
-            rwyInUseText.VerticalAlignment = VerticalAlignment.Center;
-            rwyInUseText.HorizontalAlignment = HorizontalAlignment.Right;
-            rwyInUseText.Margin = new Thickness(0, 0, 10, 0);
+            Grid rwyInUseGrid = new Grid();
+            rwyInUseGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Etiket
+            rwyInUseGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Değer
+            
+            TextBlock rwyInUseLabel = new TextBlock();
+            rwyInUseLabel.Text = "RWY IN USE";
+            rwyInUseLabel.Foreground = Brushes.White;
+            rwyInUseLabel.FontWeight = FontWeights.Bold;
+            rwyInUseLabel.VerticalAlignment = VerticalAlignment.Center;
+            rwyInUseLabel.HorizontalAlignment = HorizontalAlignment.Right;
+            rwyInUseLabel.Margin = new Thickness(0, 0, 5, 0);
+            
+            TextBlock rwyInUseValue = new TextBlock();
+            rwyInUseValue.Text = "35";
+            rwyInUseValue.Foreground = Brushes.White;
+            rwyInUseValue.FontWeight = FontWeights.Bold;
+            rwyInUseValue.VerticalAlignment = VerticalAlignment.Center;
+            rwyInUseValue.HorizontalAlignment = HorizontalAlignment.Left;
+            
+            // RWY IN USE değerini kaydet
+            RegisterTextElement(rwyInUseValue, "runwayInUse");
+            
+            Grid.SetColumn(rwyInUseLabel, 0);
+            Grid.SetColumn(rwyInUseValue, 1);
+            
+            rwyInUseGrid.Children.Add(rwyInUseLabel);
+            rwyInUseGrid.Children.Add(rwyInUseValue);
+            
+            rwyInUseBorder.Child = rwyInUseGrid;
             
             Grid.SetColumn(tabPanel, 0);
-            Grid.SetColumn(rwyInUseText, 1);
+            Grid.SetColumn(rwyInUseBorder, 1);
             
             tabBarGrid.Children.Add(tabPanel);
-            tabBarGrid.Children.Add(rwyInUseText);
+            tabBarGrid.Children.Add(rwyInUseBorder);
             
             tabBarBorder.Child = tabBarGrid;
             
@@ -85,24 +127,26 @@ namespace AirportDisplayApp.UI
         {
             Button tabButton = new Button();
             tabButton.Content = text;
-            tabButton.Padding = new Thickness(15, 3, 15, 3);
+            tabButton.Padding = new Thickness(10, 4, 10, 4);
+            tabButton.Margin = new Thickness(3, 0, 0, 0);
             
             if (isActive)
             {
-                // Aktif sekme - koyu mavi arka plan, beyaz yazı
-                tabButton.Background = new SolidColorBrush(Color.FromRgb(0, 156, 178)); // Turkuaz
-                tabButton.Foreground = Brushes.White;
-                tabButton.FontWeight = FontWeights.Bold;
+                // Aktif sekme - beyaz arka plan, koyu mavi kenarlık
+                tabButton.Background = Brushes.White;
+                tabButton.Foreground = Brushes.Black;
+                tabButton.BorderBrush = new SolidColorBrush(Color.FromRgb(80, 140, 170));
+                tabButton.FontWeight = FontWeights.Normal;
             }
             else
             {
-                // Pasif sekme - açık gri arka plan
-                tabButton.Background = new SolidColorBrush(Color.FromRgb(230, 240, 245)); // Açık gri
+                // Pasif sekme - daha koyu mavi/gri arka plan
+                tabButton.Background = new SolidColorBrush(Color.FromRgb(180, 210, 220)); // Açık gri-mavi
                 tabButton.Foreground = Brushes.Black;
+                tabButton.BorderBrush = new SolidColorBrush(Color.FromRgb(150, 190, 210));
             }
             
-            tabButton.BorderThickness = new Thickness(1, 1, 1, 0);
-            tabButton.BorderBrush = new SolidColorBrush(Colors.DarkGray);
+            tabButton.BorderThickness = new Thickness(1);
             
             return tabButton;
         }
