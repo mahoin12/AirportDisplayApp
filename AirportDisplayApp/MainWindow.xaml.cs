@@ -101,49 +101,17 @@ namespace AirportDisplayApp
                 // METAR bilgisini güncelle
                 _uiManager.UpdateDisplayElement("metar", data.Metar);
 
-                // Eski stil güncelleme:
-                // _uiManager.UpdateWindDirection("RWY 35", data.Runway35.AvgWindDirection);
-                // _uiManager.UpdateWindDirection("RWY 17", data.Runway17.AvgWindDirection);
-
-                // YENİ: Rüzgar oklarını ve yön göstergelerini güncelle - tam RunwayDataModel ile
+                // Rüzgar oklarını ve yön göstergelerini güncelle - tam RunwayDataModel ile
+                // Bu metot içinde zaten tüm runway verileri güncelleniyor
                 _uiManager.UpdateWindDirection("RWY 35", data.Runway35);
                 _uiManager.UpdateWindDirection("RWY 17", data.Runway17);
-
-                // Diğer metin güncellemelerini korumalıyız
-                _uiManager.UpdateDisplayElement("leftWindSpeed", data.Runway35.WindSpeed);
-                _uiManager.UpdateDisplayElement("left2MinDir", data.Runway35.Min2Direction);
-                _uiManager.UpdateDisplayElement("left2MinSpeed", data.Runway35.Min2Speed);
-                _uiManager.UpdateDisplayElement("left2AvgDir", data.Runway35.Avg2Direction);
-                _uiManager.UpdateDisplayElement("left2AvgSpeed", data.Runway35.Avg2Speed);
-                _uiManager.UpdateDisplayElement("left2MaxDir", data.Runway35.Max2Direction);
-                _uiManager.UpdateDisplayElement("left2MaxSpeed", data.Runway35.Max2Speed);
-                _uiManager.UpdateDisplayElement("leftHwCw", data.Runway35.HwCw);
-                _uiManager.UpdateDisplayElement("baseValue", data.Runway35.Base);
-                _uiManager.UpdateDisplayElement("left10MinDir", data.Runway35.Min10Direction);
-                _uiManager.UpdateDisplayElement("left10MinSpeed", data.Runway35.Min10Speed);
-                _uiManager.UpdateDisplayElement("left10AvgDir", data.Runway35.Avg10Direction);
-                _uiManager.UpdateDisplayElement("left10AvgSpeed", data.Runway35.Avg10Speed);
-                _uiManager.UpdateDisplayElement("left10MaxDir", data.Runway35.Max10Direction);
-                _uiManager.UpdateDisplayElement("left10MaxSpeed", data.Runway35.Max10Speed);
-                _uiManager.UpdateDisplayElement("leftQfeValue", data.Runway35.QFE);
-                _uiManager.UpdateDisplayElement("leftQfeMm", data.Runway35.QFEInHg);
-
-                _uiManager.UpdateDisplayElement("rightWindSpeed", data.Runway17.WindSpeed);
-                _uiManager.UpdateDisplayElement("right2MinDir", data.Runway17.Min2Direction);
-                _uiManager.UpdateDisplayElement("right2MinSpeed", data.Runway17.Min2Speed);
-                _uiManager.UpdateDisplayElement("right2AvgDir", data.Runway17.Avg2Direction);
-                _uiManager.UpdateDisplayElement("right2AvgSpeed", data.Runway17.Avg2Speed);
-                _uiManager.UpdateDisplayElement("right2MaxDir", data.Runway17.Max2Direction);
-                _uiManager.UpdateDisplayElement("right2MaxSpeed", data.Runway17.Max2Speed);
-                _uiManager.UpdateDisplayElement("rightHwCw", data.Runway17.HwCw);
-                _uiManager.UpdateDisplayElement("right10MinDir", data.Runway17.Min10Direction);
-                _uiManager.UpdateDisplayElement("right10MinSpeed", data.Runway17.Min10Speed);
-                _uiManager.UpdateDisplayElement("right10AvgDir", data.Runway17.Avg10Direction);
-                _uiManager.UpdateDisplayElement("right10AvgSpeed", data.Runway17.Avg10Speed);
-                _uiManager.UpdateDisplayElement("right10MaxDir", data.Runway17.Max10Direction);
-                _uiManager.UpdateDisplayElement("right10MaxSpeed", data.Runway17.Max10Speed);
-                _uiManager.UpdateDisplayElement("rightQfeValue", data.Runway17.QFE);
-                _uiManager.UpdateDisplayElement("rightQfeMm", data.Runway17.QFEInHg);
+                
+                // NOT: Aşağıdaki tekrarlı güncellemeler kaldırıldı, çünkü UpdateWindDirection metodu 
+                // içinde zaten tüm bu değerler güncelleniyor.
+                // 
+                // _uiManager.UpdateDisplayElement("leftWindSpeed", data.Runway35.WindSpeed);
+                // _uiManager.UpdateDisplayElement("left2MinDir", data.Runway35.Min2Direction);
+                // ...ve diğer alanlar
             });
         }
 

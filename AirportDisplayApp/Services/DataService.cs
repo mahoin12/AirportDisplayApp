@@ -34,7 +34,8 @@ namespace AirportDisplayApp.Services
 
         public DataService()
         {
-            airportData = new AirportDataModel();
+            // Varsayılan veri modelini oluştur
+            airportData = DefaultDataModelFactory.CreateDefaultDataModel();
 
             // Yeniden bağlanma zamanlayıcısını oluştur
             reconnectTimer = new DispatcherTimer
@@ -250,35 +251,14 @@ namespace AirportDisplayApp.Services
         /// </summary>
         public void GenerateSimulatedData()
         {
-            // Rasgele veri oluştur
-            Random rand = new Random();
-
-            // Rüzgar yönlerini güncelle
-            double leftWindDir = rand.Next(0, 360);
-            double rightWindDir = rand.Next(0, 360);
-
-            // Rüzgar hızlarını güncelle
-            int leftWindSpeed = rand.Next(2, 15);
-            int rightWindSpeed = rand.Next(2, 15);
-
-            // Verileri modele aktar
-            airportData.Time = DateTime.Now.ToString("HH:mm:ss");
-            airportData.Runway35.WindSpeed = leftWindSpeed.ToString();
-            airportData.Runway35.AvgWindDirection = leftWindDir;
-            airportData.Runway17.WindSpeed = rightWindSpeed.ToString();
-            airportData.Runway17.AvgWindDirection = rightWindDir;
-
-            // Sıcaklık değerlerini güncelle
-            double temp = 20 + rand.NextDouble() * 15;
-            airportData.Temperature = temp.ToString("F1");
-
-            // Çiy noktası
-            double dewPoint = temp - (5 + rand.NextDouble() * 10);
-            airportData.DewPoint = dewPoint.ToString("F1");
-
+            // Mevcut modeli rastgele verilerle güncelle
+            // Bu metot artık model.Runway35 = ... gibi atamalar yapmıyor
+            // Bunun yerine model.Runway35.WindSpeed = ... gibi güncelleme yapıyor
+            DefaultDataModelFactory.UpdateModelWithRandomData(airportData);
+            
             // Event'i tetikle
             DataUpdated?.Invoke(this, airportData);
-
+            
             UpdateConnectionStatus($"Simüle edilmiş veri oluşturuldu: {DateTime.Now:HH:mm:ss}");
         }
 

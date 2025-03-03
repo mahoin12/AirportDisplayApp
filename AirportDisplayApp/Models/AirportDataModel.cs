@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace AirportDisplayApp.Models
 {
     /// <summary>
-    /// Havaalanı verilerini tutan model sınıfı - Geliştirilmiş sürüm
+    /// Havaalanı verilerini tutan model sınıfı
     /// INotifyPropertyChanged implementasyonu ile UI güncellemesini destekler
     /// </summary>
     public class AirportDataModel : INotifyPropertyChanged
@@ -238,33 +238,49 @@ namespace AirportDisplayApp.Models
 
         public AirportDataModel()
         {
-            // Varsayılan değerlerle pist nesnelerini oluştur
+            // Boş pist nesnelerini oluştur, değerleri doldurmadan
             Runway35 = new RunwayDataModel("RWY 35");
             Runway17 = new RunwayDataModel("RWY 17");
-
-            // Sol pist (35) için varsayılan değerler
-            Runway35.WindSpeed = "7";
-            Runway35.AvgWindDirection = 270;
-            Runway35.HwCw = "H02   L05";
-            Runway35.Base = "NCD";
-            Runway35.Min10Direction = "* CALM";
-            Runway35.Min10Speed = "";
-            Runway35.QFE = "1012.8";
-            Runway35.QFEInHg = "29.91";
-
-            // Sağ pist (17) için varsayılan değerler
-            Runway17.WindSpeed = "5";
-            Runway17.AvgWindDirection = 90;
-            Runway17.HwCw = "T01   R05";
-            Runway17.Min10Direction = "220";
-            Runway17.Min10Speed = "2";
-            Runway17.QFE = "1012.7";
-            Runway17.QFEInHg = "29.90";
+            
+            // Varsayılan değerler artık DefaultDataModelFactory sınıfında
+        }
+        
+        /// <summary>
+        /// Bu modelin verilerini başka bir modelden günceller
+        /// </summary>
+        public void UpdateFromModel(AirportDataModel source)
+        {
+            if (source == null) return;
+            
+            // Genel bilgileri güncelle
+            Time = source.Time;
+            RunwayInUse = source.RunwayInUse;
+            RwyInUseInfo = source.RwyInUseInfo;
+            
+            // Merkez panel verileri
+            QNH = source.QNH;
+            QNHInHg = source.QNHInHg;
+            QFE = source.QFE;
+            QFESynop = source.QFESynop;
+            Low = source.Low;
+            Temperature = source.Temperature;
+            DewPoint = source.DewPoint;
+            RelativeHumidity = source.RelativeHumidity;
+            TempMax = source.TempMax;
+            TempMin = source.TempMin;
+            RunwayTemp = source.RunwayTemp;
+            Metar = source.Metar;
+            
+            // RWY 35 verilerini güncelle
+            Runway35.UpdateFromModel(source.Runway35);
+            
+            // RWY 17 verilerini güncelle
+            Runway17.UpdateFromModel(source.Runway17);
         }
     }
 
     /// <summary>
-    /// Pist verilerini tutan model sınıfı - Geliştirilmiş sürüm
+    /// Pist verilerini tutan model sınıfı
     /// INotifyPropertyChanged implementasyonu ile UI güncellemesini destekler
     /// </summary>
     public class RunwayDataModel : INotifyPropertyChanged
@@ -555,6 +571,46 @@ namespace AirportDisplayApp.Models
         public RunwayDataModel(string runwayName)
         {
             RunwayName = runwayName;
+            // Diğer varsayılan değerler artık DefaultDataModelFactory sınıfında
+        }
+        
+        /// <summary>
+        /// Bu modelin verilerini başka bir modelden günceller
+        /// </summary>
+        public void UpdateFromModel(RunwayDataModel source)
+        {
+            if (source == null) return;
+            
+            // Pist adını değiştirme (sabit kalmalı)
+            // RunwayName = source.RunwayName;
+            
+            // Rüzgar verileri
+            WindSpeed = source.WindSpeed;
+            AvgWindDirection = source.AvgWindDirection;
+            
+            // 2 dakikalık veriler
+            Min2Direction = source.Min2Direction;
+            Min2Speed = source.Min2Speed;
+            Avg2Direction = source.Avg2Direction;
+            Avg2Speed = source.Avg2Speed;
+            Max2Direction = source.Max2Direction;
+            Max2Speed = source.Max2Speed;
+            
+            // Hw/Cw ve Base değerleri
+            HwCw = source.HwCw;
+            Base = source.Base;
+            
+            // 10 dakikalık veriler
+            Min10Direction = source.Min10Direction;
+            Min10Speed = source.Min10Speed;
+            Avg10Direction = source.Avg10Direction;
+            Avg10Speed = source.Avg10Speed;
+            Max10Direction = source.Max10Direction;
+            Max10Speed = source.Max10Speed;
+            
+            // QFE değerleri
+            QFE = source.QFE;
+            QFEInHg = source.QFEInHg;
         }
     }
 }
