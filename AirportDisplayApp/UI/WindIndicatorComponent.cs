@@ -9,15 +9,14 @@ using System.Windows.Shapes;
 namespace AirportDisplayApp.UI
 {
     /// <summary>
-    /// Rüzgar göstergesi bileşeni - Referans görüntülere (2. ve 3. resim) uygun olarak düzeltilmiş
-    /// Herhangi bir değeri saklamadan, dışarıdan gelen değerlerle çalışır
+    /// Rüzgar göstergesi bileşeni - İşaret kutuları düzeltilmiş versiyon
     /// </summary>
     public class WindIndicatorComponent
     {
         private readonly Window _owner;
         private readonly string _runwayName;
         private TextBlock _speedText;
-        private FrameworkElement _windIndicator;
+        private Polygon _windTriangle;
         
         // Kutuları saklamak için koleksiyon
         private Dictionary<int, Rectangle> _directionMarks = new Dictionary<int, Rectangle>();
@@ -119,47 +118,91 @@ namespace AirportDisplayApp.UI
             
             windGrid.Children.Add(directionMarksCanvas);
             
+            // Pist yönüne göre döndür - sabittir, güncellenmez
+            double runwayAngle = _runwayName == "RWY 35" ? 0 : 180; // RWY 35 ve RWY 17 için ters yönler
+            
             // Pist göstergesi - İkinci ve üçüncü referans görüntüye göre düzeltildi
-            Grid runwayGrid = new Grid();
-            runwayGrid.HorizontalAlignment = HorizontalAlignment.Center;
-            runwayGrid.VerticalAlignment = VerticalAlignment.Center;
+            Canvas runwayCanvas = new Canvas();
+            runwayCanvas.Width = 240;
+            runwayCanvas.Height = 240;
+            runwayCanvas.HorizontalAlignment = HorizontalAlignment.Center;
+            runwayCanvas.VerticalAlignment = VerticalAlignment.Center;
             
-            // Ana pist dikdörtgeni (gri)
+            // Ana pist dikdörtgeni (koyu gri)
             Rectangle runwayBase = new Rectangle();
-            runwayBase.Width = 20;
-            runwayBase.Height = 60;
-            runwayBase.Fill = Brushes.DarkGray;
+            runwayBase.Width = 32;
+            runwayBase.Height = 150;
+            runwayBase.Fill = new SolidColorBrush(Color.FromRgb(90, 90, 90)); // Koyu gri
             
-            // Pist üzerindeki 3 beyaz çizgi (altında)
-            StackPanel runwayStripes = new StackPanel();
-            runwayStripes.Width = 20;
-            runwayStripes.Height = 20;
-            runwayStripes.VerticalAlignment = VerticalAlignment.Bottom;
-            runwayStripes.HorizontalAlignment = HorizontalAlignment.Center;
+            // Pist şeklini canvas'e yerleştir
+            Canvas.SetLeft(runwayBase, 120 - runwayBase.Width/2); // Tam merkezde
+            Canvas.SetTop(runwayBase, 120 - runwayBase.Height/2); // Tam merkezde
             
-            for (int i = 0; i < 3; i++)
-            {
-                Rectangle stripe = new Rectangle();
-                stripe.Width = 12;
-                stripe.Height = 3;
-                stripe.Margin = new Thickness(0, 1, 0, 1);
-                stripe.Fill = Brushes.White;
-                stripe.HorizontalAlignment = HorizontalAlignment.Center;
-                
-                runwayStripes.Children.Add(stripe);
-            }
+            // Ana pist için transform grubu
+            TransformGroup baseTransform = new TransformGroup();
+            baseTransform.Children.Add(new RotateTransform(runwayAngle));
+            runwayBase.RenderTransform = baseTransform;
+            runwayBase.RenderTransformOrigin = new Point(0.5, 0.5);
             
-            runwayGrid.Children.Add(runwayBase);
-            runwayGrid.Children.Add(runwayStripes);
+            // Runwayı ekle
+            runwayCanvas.Children.Add(runwayBase);
             
-            // Pist yönüne göre döndür
-            TransformGroup runwayTransform = new TransformGroup();
-            double runwayDirection = _runwayName == "RWY 35" ? 0 : 180; // RWY 35 ve RWY 17 için farklı yönler
-            runwayTransform.Children.Add(new RotateTransform(runwayDirection));
-            runwayGrid.RenderTransform = runwayTransform;
-            runwayGrid.RenderTransformOrigin = new Point(0.5, 0.5);
+            // Üst işaretleri oluştur - dikdörtgenler piste dik olacak (90 derece)
+            // Orta işaret (pist eksenine hizalı)
+            Rectangle topMarkingCenter = new Rectangle();
+            topMarkingCenter.Width = 24;
+            topMarkingCenter.Height = 6;
+            topMarkingCenter.Fill = Brushes.LightGray;
             
-            windGrid.Children.Add(runwayGrid);
+            // Sol işaret
+            Rectangle topMarkingLeft = new Rectangle();
+            topMarkingLeft.Width = 24;
+            topMarkingLeft.Height = 6;
+            topMarkingLeft.Fill = Brushes.LightGray;
+            
+            // Sağ işaret
+            Rectangle topMarkingRight = new Rectangle();
+            topMarkingRight.Width = 24;
+            topMarkingRight.Height = 6;
+            topMarkingRight.Fill = Brushes.LightGray;
+            
+            // İşaretler için kök Canvas (bu tüm işaretleri içerecek ve pist yönüne göre döndürülecek)
+            Canvas markingsCanvas = new Canvas();
+            markingsCanvas.Width = 80; // Yeterince geniş olsun
+            markingsCanvas.Height = 30; // Yeterince yüksek olsun
+            
+            // Merkez işareti Canvas içinde yerleştir
+            Canvas.SetLeft(topMarkingCenter, 40 - topMarkingCenter.Width/2); // Merkezde
+            Canvas.SetTop(topMarkingCenter, 12); // Ortada 
+            
+            // Sol işareti Canvas içinde yerleştir
+            Canvas.SetLeft(topMarkingLeft, 10);  // Sol tarafta
+            Canvas.SetTop(topMarkingLeft, 12);  // Ortada
+            
+            // Sağ işareti Canvas içinde yerleştir
+            Canvas.SetLeft(topMarkingRight, 70 - topMarkingRight.Width); // Sağ tarafta
+            Canvas.SetTop(topMarkingRight, 12); // Ortada
+            
+            // İşaretleri ekle
+            markingsCanvas.Children.Add(topMarkingCenter);
+            markingsCanvas.Children.Add(topMarkingLeft);
+            markingsCanvas.Children.Add(topMarkingRight);
+            
+            // İşaretleri içeren Canvas'ı yerleştir - pistin üstünde olacak şekilde
+            Canvas.SetLeft(markingsCanvas, 120 - markingsCanvas.Width/2); // Ana canvas'ın ortasında
+            Canvas.SetTop(markingsCanvas, 120 - runwayBase.Height/2 - markingsCanvas.Height); // Pistin üstünde
+            
+            // İşaretler canvas'ını pist açısına göre döndür
+            TransformGroup markingsTransform = new TransformGroup();
+            markingsTransform.Children.Add(new RotateTransform(runwayAngle));
+            markingsCanvas.RenderTransform = markingsTransform;
+            markingsCanvas.RenderTransformOrigin = new Point(0.5, 1.0); // Alt merkez noktası etrafında döndür
+            
+            // İşaretleri canvas'a ekle
+            runwayCanvas.Children.Add(markingsCanvas);
+            
+            // Pist canvas'ını ekle
+            windGrid.Children.Add(runwayCanvas);
             
             // Rüzgar göstergesi (üçgen) - Ok yerine üçgen kullanıldı
             Canvas indicatorCanvas = new Canvas();
@@ -168,48 +211,45 @@ namespace AirportDisplayApp.UI
             indicatorCanvas.HorizontalAlignment = HorizontalAlignment.Center;
             indicatorCanvas.VerticalAlignment = VerticalAlignment.Center;
             
-            // Üçgen şeklinde rüzgar göstergesi (daha ince ve uzun)
-            Polygon windTriangle = new Polygon();
-            windTriangle.Points = new PointCollection
+            // Üçgen şeklinde rüzgar göstergesi (rüzgarın geldiği yönü gösterir)
+            _windTriangle = new Polygon();
+            _windTriangle.Points = new PointCollection
             {
-                new Point(0, -15),   // Üst
-                new Point(-5, 0),    // Sol alt
-                new Point(5, 0)      // Sağ alt
+                new Point(0, 0),     // Alt
+                new Point(-6, -20),  // Sol üst
+                new Point(6, -20)    // Sağ üst
             };
-            windTriangle.Fill = Brushes.Black;
+            _windTriangle.Fill = Brushes.Black;
             
             // Üçgeni canvas'e ekle
-            Canvas.SetLeft(windTriangle, 120);
-            Canvas.SetTop(windTriangle, 120);
+            Canvas.SetLeft(_windTriangle, 120);
+            Canvas.SetTop(_windTriangle, 120);
             
             // Dönüş transformu
             TransformGroup triangleTransform = new TransformGroup();
             
             // 1. Transform: Üçgeni yerleştir (dairenin dışına)
-            TranslateTransform translateTransform = new TranslateTransform(0, -115);
+            TranslateTransform translateTransform = new TranslateTransform(0, -100);
             triangleTransform.Children.Add(translateTransform);
             
-            // 2. Transform: Başlangıç açısı 0
+            // 2. Transform: Başlangıç açısı 0 - Rüzgarın geldiği yönü gösterir
             RotateTransform rotateTransform = new RotateTransform(0);
             triangleTransform.Children.Add(rotateTransform);
             
-            windTriangle.RenderTransform = triangleTransform;
-            windTriangle.RenderTransformOrigin = new Point(0, 0);
+            _windTriangle.RenderTransform = triangleTransform;
+            _windTriangle.RenderTransformOrigin = new Point(0, 0);
             
-            indicatorCanvas.Children.Add(windTriangle);
+            indicatorCanvas.Children.Add(_windTriangle);
             windGrid.Children.Add(indicatorCanvas);
-            
-            // Rüzgar göstergesini kaydet (referans için)
-            _windIndicator = windTriangle;
             
             // Rüzgar göstergesi için bir isim kaydedelim
             string windIndicatorName = _runwayName == "RWY 35" ? "LeftWindIndicator" : "RightWindIndicator";
-            _owner.RegisterName(windIndicatorName, windTriangle);
+            _owner.RegisterName(windIndicatorName, _windTriangle);
             
             // Rüzgar hızı göstergesi - tam ortada beyaz kutu içinde siyah rakam
             Border speedBorder = new Border();
             speedBorder.Background = Brushes.White;
-            speedBorder.BorderBrush = Brushes.Black;
+            speedBorder.BorderBrush = Brushes.Gray;
             speedBorder.BorderThickness = new Thickness(1);
             speedBorder.Width = 40;
             speedBorder.Height = 30;
@@ -220,6 +260,7 @@ namespace AirportDisplayApp.UI
             _speedText.Text = _runwayName == "RWY 35" ? "7" : "5";  // Ekran görüntüsündeki değerlere uygun
             _speedText.FontSize = 20;
             _speedText.FontWeight = FontWeights.Bold;
+            _speedText.Foreground = Brushes.Black;
             _speedText.VerticalAlignment = VerticalAlignment.Center;
             _speedText.HorizontalAlignment = HorizontalAlignment.Center;
             
@@ -230,6 +271,18 @@ namespace AirportDisplayApp.UI
             speedBorder.Child = _speedText;
             windGrid.Children.Add(speedBorder);
             
+            // Başlangıçta seçili rüzgar kutularını renklendir (örnek gösterim için)
+            // Soldaki pist için 280-340 dereceler arası 
+            // Sağdaki pist için 240-300 dereceler arası
+            if (_runwayName == "RWY 35")
+            {
+                ColorDirectionRange(280, 340, Color.FromRgb(0, 150, 150)); // Turkuaz/Yeşil
+            }
+            else
+            {
+                ColorDirectionRange(240, 300, Color.FromRgb(0, 150, 150)); // Turkuaz/Yeşil
+            }
+            
             return windGrid;
         }
         
@@ -238,24 +291,32 @@ namespace AirportDisplayApp.UI
         /// </summary>
         public void UpdateWindDirection(double direction)
         {
-            // Rüzgar göstergesini bul
-            string indicatorName = _runwayName == "RWY 35" ? "LeftWindIndicator" : "RightWindIndicator";
-            var windTriangle = _owner.FindName(indicatorName) as Polygon;
-            
-            if (windTriangle != null)
+            try
             {
-                // Transform grubunu al
-                TransformGroup transformGroup = windTriangle.RenderTransform as TransformGroup;
-                if (transformGroup != null && transformGroup.Children.Count > 1)
+                // Rüzgar üçgeni direkt olarak referans tutuluyor, bu daha güvenilir
+                if (_windTriangle != null)
                 {
-                    // İkinci transform döndürme olmalı (ilki konumlandırma)
-                    RotateTransform rotateTransform = transformGroup.Children[1] as RotateTransform;
-                    if (rotateTransform != null)
+                    // Transform grubunu al
+                    TransformGroup transformGroup = _windTriangle.RenderTransform as TransformGroup;
+                    if (transformGroup != null && transformGroup.Children.Count > 1)
                     {
-                        // Rüzgar yönünü ayarla (rüzgarın nereden geldiğini gösterir)
-                        rotateTransform.Angle = direction;
+                        // İkinci transform döndürme olmalı (ilki konumlandırma)
+                        RotateTransform rotateTransform = transformGroup.Children[1] as RotateTransform;
+                        if (rotateTransform != null)
+                        {
+                            // Rüzgar yönünü ayarla (rüzgarın nereden geldiğini gösterir)
+                            rotateTransform.Angle = direction;
+                            
+                            // Aynı zamanda kutu renklerini de güncelle
+                            UpdateDirectionColors(direction - 40, direction + 40, 0, 0);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunu logla ama UI'ı engellemeden devam et
+                System.Diagnostics.Debug.WriteLine($"Rüzgar yönü güncellenirken hata: {ex.Message}");
             }
         }
         
@@ -287,6 +348,12 @@ namespace AirportDisplayApp.UI
             // Üçgeni avg2Dir yönüne çevir
             UpdateWindDirection(avg2Direction);
             
+            // Önce tüm kutuları gri yap
+            foreach (var mark in _directionMarks.Values)
+            {
+                mark.Fill = new SolidColorBrush(Color.FromRgb(200, 200, 200)); // Açık gri
+            }
+            
             // Kutuların renklerini güncelle
             UpdateDirectionColors(min2Direction, max2Direction, min10Direction, max10Direction);
         }
@@ -297,28 +364,13 @@ namespace AirportDisplayApp.UI
         private void UpdateDirectionColors(double min2Direction, double max2Direction, 
                                          double min10Direction, double max10Direction)
         {
-            // Önce tüm kutuları gri yap
-            foreach (var mark in _directionMarks.Values)
-            {
-                mark.Fill = new SolidColorBrush(Color.FromRgb(200, 200, 200)); // Açık gri
-            }
-            
             // 2 dakikalık ölçümler için turkuaz renk (koyu mavi)
-            Color color2Min = Color.FromRgb(0, 156, 178); // Turkuaz
+            Color color2Min = Color.FromRgb(0, 150, 150); // Turkuaz/Yeşil
             
             // Min ve max arasındaki bölgeyi renklendir (2-dakika)
             if (min2Direction > 0) // CALM değilse
             {
                 ColorDirectionRange((int)min2Direction, (int)max2Direction, color2Min);
-            }
-            
-            // 10 dakikalık ölçümler için açık mavi renk
-            Color color10Min = Color.FromRgb(86, 180, 233); // Açık mavi
-            
-            // Min ve max arasındaki bölgeyi renklendir (10-dakika)
-            if (min10Direction > 0) // CALM değilse
-            {
-                ColorDirectionRange((int)min10Direction, (int)max10Direction, color10Min);
             }
         }
         
@@ -377,8 +429,7 @@ namespace AirportDisplayApp.UI
             // Sayısal kısmı çıkart (özel karakterleri temizle)
             string cleanedStr = new string(directionStr.Where(c => char.IsDigit(c) || c == '.').ToArray());
             
-            double direction;
-            if (double.TryParse(cleanedStr, out direction))
+            if (double.TryParse(cleanedStr, out double direction))
             {
                 return direction;
             }
