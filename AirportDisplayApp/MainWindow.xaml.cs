@@ -59,6 +59,12 @@ namespace AirportDisplayApp
             {
                 Close();
             }
+            // F5 tuşu ile simülasyon verisi oluştur
+            else if (e.Key == Key.F5)
+            {
+                _dataService.GenerateSimulatedData();
+                _uiManager.UpdateConnectionStatus("F5 tuşu ile yeni simülasyon verisi oluşturuldu");
+            }
         }
         
         private void MainWindow_Closed(object sender, EventArgs e)

@@ -252,15 +252,15 @@ namespace AirportDisplayApp.Services
         public void GenerateSimulatedData()
         {
             // Mevcut modeli rastgele verilerle güncelle
-            // Bu metot artık model.Runway35 = ... gibi atamalar yapmıyor
-            // Bunun yerine model.Runway35.WindSpeed = ... gibi güncelleme yapıyor
             DefaultDataModelFactory.UpdateModelWithRandomData(airportData);
-            
-            // Event'i tetikle
+    
+            // Event'i tetikle - bu çağrı DataUpdated event'ini tetikleyerek UI'ın güncellenmesini sağlayacak
             DataUpdated?.Invoke(this, airportData);
-            
+    
+            // Bağlantı durum mesajını güncelle
             UpdateConnectionStatus($"Simüle edilmiş veri oluşturuldu: {DateTime.Now:HH:mm:ss}");
         }
+
 
         /// <summary>
         /// JSON verisini işle
